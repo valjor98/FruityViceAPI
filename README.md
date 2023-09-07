@@ -6,7 +6,7 @@ This Python script fetches data from the FruityVice API and allows you to filter
 
 ## Requirements
 
-- Python 3.x
+- Python 3
 - Requests library
 - SQLite3 library
 - CSV library
@@ -14,7 +14,7 @@ This Python script fetches data from the FruityVice API and allows you to filter
 ## How to Run
 
 1. Open the terminal and navigate to the folder containing the Python script.
-2. Run the script by executing `python script_name.py` (replace `script_name` with the actual file name).
+2. Run the script by executing `python script.py`
 
 ## Example Usages
 
