@@ -5,6 +5,7 @@ import csv
 def fetch_fruits(url):
     response = requests.get(url)
     if response.status_code == 200:
+        #print(response.json())
         return response.json()
     else:
         print(f"Error: Received status code {response.status_code}")
@@ -22,16 +23,40 @@ def fetch_and_export_to_csv(filename='fruits.csv', family=None, genus=None, id_r
     if genus:
         genus_url = f"{base_url}/api/fruit/genus/{genus}"
         genus_fruits = fetch_fruits(genus_url)
-    
-    # If both family and genus are specified, take intersection. Else, take union
-    if family and genus:
-        fruits = [fruit for fruit in family_fruits if fruit in genus_fruits]
-    else:
-        fruits = family_fruits + genus_fruits
-    
+
     # Filter by ID
     if id_range:
-        fruits = [fruit for fruit in fruits if id_range[0] <= int(fruit['id']) <= id_range[1]]
+        all_url = f"{base_url}/api/fruit/all"
+        all_fruits = fetch_fruits(all_url)
+        all_fruits = [fruit for fruit in all_fruits if id_range[0] <= fruit['id'] <= id_range[1]]
+        print("all_fruits", all_fruits)
+
+    # If both family and genus are specified, take intersection. Else, take union
+    if family and genus:
+        family_ids = {f['id'] for f in family_fruits}
+        genus_ids = {g['id'] for g in genus_fruits}
+        intersection_ids = family_ids & genus_ids
+        fruits = [f for f in family_fruits if f['id'] in intersection_ids]
+    elif family:
+        fruits = family_fruits
+    elif genus:
+        fruits = genus_fruits
+    else:
+        fruits = all_fruits  # <- Populate with all fruits if no family or genus is specified
+
+    # Add these lines for debugging
+    print("Family IDs:", {f['id'] for f in family_fruits})
+    print("Genus IDs:", {g['id'] for g in genus_fruits})
+    print("Fruits before ID filtering:", {f['id'] for f in fruits})
+
+    if id_range:
+        ids_to_keep = {fruit['id'] for fruit in all_fruits}
+        print("ids_to_keep", ids_to_keep)
+        fruits = [fruit for fruit in fruits if fruit['id'] in ids_to_keep]
+        
+    # Add this line for debugging
+    print("Fruits after ID filtering:", {f['id'] for f in fruits})
+
     
     # Export to CSV
     with open(filename, 'w', newline='') as csvfile:
@@ -52,7 +77,7 @@ def fetch_and_export_to_csv(filename='fruits.csv', family=None, genus=None, id_r
 
 # Examples
 fetch_and_export_to_csv(filename='example1.csv', family='Rosaceae', genus='Malus')
-fetch_and_export_to_csv(filename='example2.csv', id_range=(1, 10))
+fetch_and_export_to_csv(filename='example2.csv', family='Rosaceae', id_range=(1, 10))
 fetch_and_export_to_csv(filename='example3.csv', family='Rosaceae')
 fetch_and_export_to_csv(filename='example4.csv', genus='Malus')
 
