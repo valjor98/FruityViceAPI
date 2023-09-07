@@ -62,4 +62,4 @@ The current feature file contains test scenarios for fetching fruits by family a
 4. Testing the database save functionality.
 5. Testing the CSV export functionality.
 
-More scenarios ar e included in the .featue file. 
+More scenarios are included in the .featue file. 
