@@ -1,6 +1,15 @@
 import requests
 import csv
 
+"""
+Python script to fetch data from the FruityVice API.
+You can filter by family, range, and/or ID
+The results are saved as a CSV file
+
+Inputs: name of file of where to save the CSV, family, genus, or ID range
+Output: creates CSV file
+"""
+
 # separate function to fetch a request
 def fetch_fruits(url):
     response = requests.get(url)
@@ -64,6 +73,7 @@ def fetch_and_export_to_csv(filename='fruits.csv', family=None, genus=None, id_r
             writer.writerow(row)
 
 # Examples
+
 # fetch_and_export_to_csv(filename='example1.csv', family='Rosaceae', genus='Malus')
 # fetch_and_export_to_csv(filename='example2.csv', family='Rosaceae', id_range=(1, 10))
 # fetch_and_export_to_csv(filename='example3.csv', family='Rosaceae')
